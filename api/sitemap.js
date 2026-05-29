@@ -1,7 +1,6 @@
 const fs = require("fs");
 const path = require("path");
 
-const SITE_URL = (process.env.SITE_URL || "https://cuestarter.com").replace(/\/+$/, "");
 const PUBLIC_DIR = path.join(process.cwd(), "public");
 
 function xmlEscape(value) {
@@ -15,9 +14,8 @@ function xmlEscape(value) {
 
 function collectHtmlRoutes() {
   const routes = new Map([
-    ["/en", { priority: "1.0", changefreq: "weekly", alternates: true, file: "index.html" }],
+    ["/", { priority: "1.0", changefreq: "weekly", alternates: true, file: "index.html" }],
     ["/es", { priority: "1.0", changefreq: "weekly", alternates: true, file: "es.html" }],
-    ["/", { priority: "0.7", changefreq: "weekly", alternates: true, file: "index.html" }],
     ["/about.html", { priority: "0.8", changefreq: "monthly", alternates: false, file: "about.html" }]
   ]);
 
@@ -34,17 +32,24 @@ function collectHtmlRoutes() {
   return [...routes.entries()];
 }
 
-function generateSitemap() {
+function resolveSiteUrl(req) {
+  const forwardedProto = req.headers["x-forwarded-proto"];
+  const proto = forwardedProto ? String(forwardedProto).split(",")[0].trim() : "https";
+  const host = req.headers["x-forwarded-host"] || req.headers.host || "cuestarter.com";
+  return `${proto}://${String(host).trim()}`.replace(/\/+$/, "");
+}
+
+function generateSitemap(siteUrl) {
   const urlEntries = collectHtmlRoutes().map(([route, meta]) => {
     const filePath = path.join(PUBLIC_DIR, meta.file);
     const stat = fs.existsSync(filePath) ? fs.statSync(filePath) : null;
     const lastmod = stat ? `\n    <lastmod>${stat.mtime.toISOString()}</lastmod>` : "";
     const alternates = meta.alternates ? `
-    <xhtml:link rel="alternate" hreflang="en" href="${SITE_URL}/en" />
-    <xhtml:link rel="alternate" hreflang="es" href="${SITE_URL}/es" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE_URL}/en" />` : "";
+    <xhtml:link rel="alternate" hreflang="en" href="${siteUrl}/" />
+    <xhtml:link rel="alternate" hreflang="es" href="${siteUrl}/es" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="${siteUrl}/" />` : "";
     return `  <url>
-    <loc>${xmlEscape(`${SITE_URL}${route}`)}</loc>${lastmod}
+    <loc>${xmlEscape(`${siteUrl}${route}`)}</loc>${lastmod}
     <changefreq>${meta.changefreq}</changefreq>
     <priority>${meta.priority}</priority>${alternates}
   </url>`;
@@ -68,5 +73,5 @@ module.exports = function sitemapHandler(req, res) {
     return;
   }
   res.statusCode = 200;
-  res.end(generateSitemap());
+  res.end(generateSitemap(resolveSiteUrl(req)));
 };

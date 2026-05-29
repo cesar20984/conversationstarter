@@ -17,10 +17,8 @@ const MIME = {
 };
 const ROUTE_MAP = {
   "/": "/index.html",
-  "/en": "/index.html",
   "/es": "/es.html"
 };
-const SITE_URL = (process.env.SITE_URL || "https://cuestarter.com").replace(/\/+$/, "");
 
 function loadEnv(filePath) {
   if (!fs.existsSync(filePath)) return;
@@ -59,9 +57,8 @@ function xmlEscape(value) {
 
 function collectHtmlRoutes() {
   const routes = new Map([
-    ["/en", { priority: "1.0", changefreq: "weekly", alternates: true, file: "index.html" }],
+    ["/", { priority: "1.0", changefreq: "weekly", alternates: true, file: "index.html" }],
     ["/es", { priority: "1.0", changefreq: "weekly", alternates: true, file: "es.html" }],
-    ["/", { priority: "0.7", changefreq: "weekly", alternates: true, file: "index.html" }],
     ["/about.html", { priority: "0.8", changefreq: "monthly", alternates: false, file: "about.html" }]
   ]);
 
@@ -76,17 +73,24 @@ function collectHtmlRoutes() {
   return [...routes.entries()];
 }
 
-function generateSitemap() {
+function resolveSiteUrl(req) {
+  const forwardedProto = req.headers["x-forwarded-proto"];
+  const proto = forwardedProto ? String(forwardedProto).split(",")[0].trim() : "https";
+  const host = req.headers["x-forwarded-host"] || req.headers.host || "cuestarter.com";
+  return `${proto}://${String(host).trim()}`.replace(/\/+$/, "");
+}
+
+function generateSitemap(siteUrl) {
   const urlEntries = collectHtmlRoutes().map(([route, meta]) => {
     const filePath = path.join(PUBLIC_DIR, meta.file);
     const stat = fs.existsSync(filePath) ? fs.statSync(filePath) : null;
     const lastmod = stat ? `\n    <lastmod>${stat.mtime.toISOString()}</lastmod>` : "";
     const alternates = meta.alternates ? `
-    <xhtml:link rel="alternate" hreflang="en" href="${SITE_URL}/en" />
-    <xhtml:link rel="alternate" hreflang="es" href="${SITE_URL}/es" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE_URL}/en" />` : "";
+    <xhtml:link rel="alternate" hreflang="en" href="${siteUrl}/" />
+    <xhtml:link rel="alternate" hreflang="es" href="${siteUrl}/es" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="${siteUrl}/" />` : "";
     return `  <url>
-    <loc>${xmlEscape(`${SITE_URL}${route}`)}</loc>${lastmod}
+    <loc>${xmlEscape(`${siteUrl}${route}`)}</loc>${lastmod}
     <changefreq>${meta.changefreq}</changefreq>
     <priority>${meta.priority}</priority>${alternates}
   </url>`;
@@ -299,8 +303,13 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (req.method === "GET" || req.method === "HEAD") {
-    if (req.url === "/sitemap.xml") {
-      sendXml(res, generateSitemap(), req.method);
+    if (req.url === "/en" || req.url.startsWith("/en?")) {
+      res.writeHead(308, { location: "/" });
+      res.end();
+      return;
+    }
+    if (req.url === "/sitemap.xml" || req.url.startsWith("/sitemap.xml?")) {
+      sendXml(res, generateSitemap(resolveSiteUrl(req)), req.method);
       return;
     }
     if (req.method === "HEAD") {

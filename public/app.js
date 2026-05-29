@@ -759,7 +759,7 @@ function render() {
 
 document.querySelectorAll("[data-lang]").forEach(btn => btn.addEventListener("click", event => {
   event.stopPropagation();
-  const targetPath = btn.dataset.lang === "es" ? "/es" : "/en";
+  const targetPath = btn.dataset.lang === "es" ? "/es" : "/";
   if (window.location.pathname !== targetPath) {
     window.location.href = targetPath;
     return;

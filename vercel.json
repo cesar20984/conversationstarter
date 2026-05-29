@@ -1,4 +1,11 @@
 {
+  "redirects": [
+    {
+      "source": "/en",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/sitemap.xml",
