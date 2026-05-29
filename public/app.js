@@ -759,6 +759,11 @@ function render() {
 
 document.querySelectorAll("[data-lang]").forEach(btn => btn.addEventListener("click", event => {
   event.stopPropagation();
+  const targetPath = btn.dataset.lang === "es" ? "/es" : "/en";
+  if (window.location.pathname !== targetPath) {
+    window.location.href = targetPath;
+    return;
+  }
   setLanguage(btn.dataset.lang);
 }));
 els.setupBackBtn.addEventListener("click", () => {
