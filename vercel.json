@@ -8,6 +8,22 @@
   ],
   "rewrites": [
     {
+      "source": "/politica-de-privacidad",
+      "destination": "/politica-de-privacidad.html"
+    },
+    {
+      "source": "/aviso-legal",
+      "destination": "/aviso-legal.html"
+    },
+    {
+      "source": "/politica-de-cookies",
+      "destination": "/politica-de-cookies.html"
+    },
+    {
+      "source": "/terminos-y-condiciones",
+      "destination": "/terminos-y-condiciones.html"
+    },
+    {
       "source": "/sitemap.xml",
       "destination": "/api/sitemap"
     }

@@ -16,12 +16,24 @@ function collectHtmlRoutes() {
   const routes = new Map([
     ["/", { priority: "1.0", changefreq: "weekly", alternates: true, file: "index.html" }],
     ["/es", { priority: "1.0", changefreq: "weekly", alternates: true, file: "es.html" }],
-    ["/about.html", { priority: "0.8", changefreq: "monthly", alternates: false, file: "about.html" }]
+    ["/about.html", { priority: "0.8", changefreq: "monthly", alternates: false, file: "about.html" }],
+    ["/politica-de-privacidad", { priority: "0.7", changefreq: "monthly", alternates: false, file: "politica-de-privacidad.html" }],
+    ["/aviso-legal", { priority: "0.7", changefreq: "monthly", alternates: false, file: "aviso-legal.html" }],
+    ["/politica-de-cookies", { priority: "0.7", changefreq: "monthly", alternates: false, file: "politica-de-cookies.html" }],
+    ["/terminos-y-condiciones", { priority: "0.7", changefreq: "monthly", alternates: false, file: "terminos-y-condiciones.html" }]
   ]);
 
   if (fs.existsSync(PUBLIC_DIR)) {
+    const reserved = new Set([
+      "index.html",
+      "es.html",
+      "politica-de-privacidad.html",
+      "aviso-legal.html",
+      "politica-de-cookies.html",
+      "terminos-y-condiciones.html"
+    ]);
     for (const fileName of fs.readdirSync(PUBLIC_DIR)) {
-      if (!fileName.endsWith(".html") || fileName === "index.html" || fileName === "es.html") continue;
+      if (!fileName.endsWith(".html") || reserved.has(fileName)) continue;
       const route = `/${fileName}`;
       if (!routes.has(route)) {
         routes.set(route, { priority: "0.6", changefreq: "monthly", alternates: false, file: fileName });
