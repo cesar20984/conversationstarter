@@ -11,9 +11,16 @@ const MIME = {
   ".css": "text/css; charset=utf-8",
   ".js": "application/javascript; charset=utf-8",
   ".json": "application/json; charset=utf-8",
+  ".xml": "application/xml; charset=utf-8",
   ".svg": "image/svg+xml; charset=utf-8",
   ".ico": "image/x-icon"
 };
+const ROUTE_MAP = {
+  "/": "/index.html",
+  "/en": "/index.html",
+  "/es": "/es.html"
+};
+const SITE_URL = (process.env.SITE_URL || "https://cuestarter.com").replace(/\/+$/, "");
 
 function loadEnv(filePath) {
   if (!fs.existsSync(filePath)) return;
@@ -36,6 +43,65 @@ function sendJson(res, status, payload) {
   const body = JSON.stringify(payload);
   res.writeHead(status, {
     "content-type": "application/json; charset=utf-8",
+    "cache-control": "no-store"
+  });
+  res.end(body);
+}
+
+function xmlEscape(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
+function collectHtmlRoutes() {
+  const routes = new Map([
+    ["/en", { priority: "1.0", changefreq: "weekly", alternates: true, file: "index.html" }],
+    ["/es", { priority: "1.0", changefreq: "weekly", alternates: true, file: "es.html" }],
+    ["/", { priority: "0.7", changefreq: "weekly", alternates: true, file: "index.html" }],
+    ["/about.html", { priority: "0.8", changefreq: "monthly", alternates: false, file: "about.html" }]
+  ]);
+
+  for (const fileName of fs.readdirSync(PUBLIC_DIR)) {
+    if (!fileName.endsWith(".html") || fileName === "index.html" || fileName === "es.html") continue;
+    const route = `/${fileName}`;
+    if (!routes.has(route)) {
+      routes.set(route, { priority: "0.6", changefreq: "monthly", alternates: false, file: fileName });
+    }
+  }
+
+  return [...routes.entries()];
+}
+
+function generateSitemap() {
+  const urlEntries = collectHtmlRoutes().map(([route, meta]) => {
+    const filePath = path.join(PUBLIC_DIR, meta.file);
+    const stat = fs.existsSync(filePath) ? fs.statSync(filePath) : null;
+    const lastmod = stat ? `\n    <lastmod>${stat.mtime.toISOString()}</lastmod>` : "";
+    const alternates = meta.alternates ? `
+    <xhtml:link rel="alternate" hreflang="en" href="${SITE_URL}/en" />
+    <xhtml:link rel="alternate" hreflang="es" href="${SITE_URL}/es" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE_URL}/en" />` : "";
+    return `  <url>
+    <loc>${xmlEscape(`${SITE_URL}${route}`)}</loc>${lastmod}
+    <changefreq>${meta.changefreq}</changefreq>
+    <priority>${meta.priority}</priority>${alternates}
+  </url>`;
+  }).join("\n");
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+${urlEntries}
+</urlset>
+`;
+}
+
+function sendXml(res, body) {
+  res.writeHead(200, {
+    "content-type": "application/xml; charset=utf-8",
     "cache-control": "no-store"
   });
   res.end(body);
@@ -175,12 +241,7 @@ async function generateWithOpenAI(state) {
 
 function serveStatic(req, res) {
   const url = new URL(req.url, `http://${req.headers.host}`);
-  const routeMap = {
-    "/": "/index.html",
-    "/en": "/index.html",
-    "/es": "/es.html"
-  };
-  const mappedPath = routeMap[url.pathname] || url.pathname;
+  const mappedPath = ROUTE_MAP[url.pathname] || url.pathname;
   const rawPath = decodeURIComponent(mappedPath);
   const safePath = path.normalize(rawPath).replace(/^(\.\.[/\\])+/, "");
   const filePath = path.join(PUBLIC_DIR, safePath);
@@ -232,6 +293,10 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (req.method === "GET") {
+    if (req.url === "/sitemap.xml") {
+      sendXml(res, generateSitemap());
+      return;
+    }
     serveStatic(req, res);
     return;
   }
