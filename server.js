@@ -175,7 +175,13 @@ async function generateWithOpenAI(state) {
 
 function serveStatic(req, res) {
   const url = new URL(req.url, `http://${req.headers.host}`);
-  const rawPath = decodeURIComponent(url.pathname === "/" ? "/index.html" : url.pathname);
+  const routeMap = {
+    "/": "/index.html",
+    "/en": "/index.html",
+    "/es": "/es.html"
+  };
+  const mappedPath = routeMap[url.pathname] || url.pathname;
+  const rawPath = decodeURIComponent(mappedPath);
   const safePath = path.normalize(rawPath).replace(/^(\.\.[/\\])+/, "");
   const filePath = path.join(PUBLIC_DIR, safePath);
 

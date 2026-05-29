@@ -256,8 +256,9 @@ function loadState() {
   try {
     Object.assign(state, JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"));
   } catch {}
+  const pageLanguage = document.documentElement.dataset.defaultLang;
   state.setupStep = Number.isInteger(state.setupStep) ? Math.max(0, Math.min(2, state.setupStep)) : 0;
-  state.language = state.language === "es" ? "es" : "en";
+  state.language = pageLanguage === "es" || pageLanguage === "en" ? pageLanguage : state.language === "es" ? "es" : "en";
   state.mode = state.mode === "guided" ? "guided" : "direct";
   state.actions = Array.isArray(state.actions) ? state.actions : [];
   state.starters = Array.isArray(state.starters) ? state.starters : [];

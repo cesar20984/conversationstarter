@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="es" data-default-lang="es">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -8,19 +8,19 @@
     <meta name="keywords" content="preguntas para romper el hielo, iniciadores de conversacion, frases para iniciar conversacion, temas de conversacion, preguntas para conocer a alguien, preguntas para primera cita, romper el hielo, conversacion incomoda, app para iniciar conversaciones, preguntas interesantes">
     <meta name="author" content="CueStarter.com">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://cuestarter.com/es.html">
-    <link rel="alternate" hreflang="en" href="https://cuestarter.com/">
-    <link rel="alternate" hreflang="es" href="https://cuestarter.com/es.html">
+    <link rel="canonical" href="https://cuestarter.com/es">
+    <link rel="alternate" hreflang="en" href="https://cuestarter.com/en">
+    <link rel="alternate" hreflang="es" href="https://cuestarter.com/es">
     <meta property="og:type" content="website">
     <meta property="og:title" content="CueStarter.com - Preguntas para Romper el Hielo">
     <meta property="og:description" content="Iniciadores de conversacion, frases para iniciar conversaciones y temas para citas, networking, fiestas y chats.">
-    <meta property="og:url" content="https://cuestarter.com/es.html">
+    <meta property="og:url" content="https://cuestarter.com/es">
     <meta property="og:site_name" content="CueStarter.com">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="CueStarter.com - Iniciadores de Conversacion">
     <meta name="twitter:description" content="Preguntas para romper el hielo y frases para iniciar conversacion en segundos.">
     <title>CueStarter.com | Preguntas para Romper el Hielo, Iniciadores de Conversacion y Temas de Conversacion</title>
-    <link rel="stylesheet" href="/styles.css?v=21">
+    <link rel="stylesheet" href="/styles.css?v=22">
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -30,7 +30,7 @@
         "operatingSystem": "Web",
         "inLanguage": "es",
         "description": "App movil para iniciadores de conversacion, preguntas para romper el hielo, frases para iniciar conversacion y temas para citas, networking y chats.",
-        "url": "https://cuestarter.com/es.html",
+        "url": "https://cuestarter.com/es",
         "offers": {
           "@type": "Offer",
           "price": "0",
@@ -40,79 +40,130 @@
     </script>
   </head>
   <body>
-    <main class="seo-shell about-page">
-      <p class="seo-kicker">CueStarter.com en espanol</p>
-      <h1>Preguntas para romper el hielo en momentos reales</h1>
-      <p>
-        CueStarter.com es una app para encontrar iniciadores de conversacion cuando no
-        sabes que decir. Te ayuda con frases para iniciar conversacion, preguntas para
-        primera cita, temas de conversacion para networking, ideas para chats online,
-        preguntas para conocer a alguien y formas naturales de salir de un silencio incomodo.
-      </p>
-      <p><a class="seo-link" href="/">Abrir la app</a></p>
+    <main class="app-shell">
+      <header id="topbar" class="topbar">
+        <div>
+          <p class="kicker">CueStarter.com</p>
+          <h1 id="screenTitle">CueStarter</h1>
+        </div>
+        <div class="language-switch" aria-label="Idioma">
+          <button class="mini" data-lang="en" type="button">EN</button>
+          <button class="mini active" data-lang="es" type="button">ES</button>
+        </div>
+      </header>
 
-      <h2>Que puedes hacer con CueStarter</h2>
+      <section id="setupPanel" class="setup-panel" aria-live="polite">
+        <div class="section-head">
+          <span id="setupTitle">Elige el tono</span>
+          <span id="setupStep">1/3</span>
+        </div>
+        <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+        <div id="setupGrid" class="choice-grid"></div>
+        <div class="step-actions">
+          <button id="setupBackBtn" class="thin-btn" type="button">Atras</button>
+          <button id="startBtn" class="ai-btn" type="button">Empezar</button>
+        </div>
+      </section>
+
+      <section id="cuePanel" class="cue-panel" hidden>
+        <div class="section-head">
+          <span id="cueLabel">Di esto</span>
+          <button id="newBtn" class="thin-btn" type="button">Nueva</button>
+        </div>
+        <div id="starterGrid" class="starter-grid"></div>
+        <button id="moreStartersBtn" class="flip-btn" type="button">Mas</button>
+        <button id="primaryCue" class="primary-cue" type="button"></button>
+        <button id="flipBtn" class="flip-btn" type="button">Coach</button>
+        <p id="cueIntent" class="cue-intent"></p>
+        <div id="waitToast" class="wait-toast" hidden>Espera un segundo...</div>
+        <div id="freshGrid" class="fresh-grid"></div>
+        <div id="actionGrid" class="action-grid"></div>
+        <div class="quick-nav">
+          <button id="showTopicsBtn" class="nav-btn" type="button">Cambiar tema</button>
+          <button id="showFreshBtn" class="nav-btn" type="button">Listas</button>
+        </div>
+        <section id="topicPanel" class="drawer-panel" hidden>
+          <div class="section-head topic-head">
+            <span id="topicTitle">Cambiar tema</span>
+            <button id="wildBtn" class="thin-btn" type="button">Azar</button>
+          </div>
+          <div id="topicGrid" class="topic-grid"></div>
+        </section>
+        <div class="bottom-actions">
+          <button id="resetBtn" class="thin-btn" type="button">Reiniciar</button>
+        </div>
+      </section>
+    </main>
+
+    <section class="seo-shell app-guide" aria-labelledby="guia-title">
+      <p class="seo-kicker">App para iniciar conversaciones</p>
+      <h1 id="guia-title">Preguntas para romper el hielo y frases para iniciar conversacion</h1>
       <p>
-        Puedes elegir un tono, decidir si quieres una frase exacta o una guia, iniciar
-        un tema, profundizar, suavizar la conversacion o cambiar completamente de tema.
-        La app esta pensada para funcionar rapido en el movil y ayudarte justo en el
-        momento en que necesitas una idea.
+        CueStarter.com te ayuda a encontrar iniciadores de conversacion cuando necesitas
+        decir algo rapido y natural. Sirve para primeras citas, networking, fiestas,
+        chats online, amistades, companeros de trabajo y momentos de silencio incomodo.
       </p>
 
-      <h2>Funciones principales</h2>
+      <h2>Como usar CueStarter.com</h2>
+      <p>
+        Elige un tono, decide si quieres una frase exacta o una guia, y selecciona el
+        contexto. La app te muestra preguntas para romper el hielo, temas de conversacion
+        y opciones para profundizar, suavizar o cambiar de tema.
+      </p>
+
       <div class="seo-grid">
         <article>
-          <h3>Frases listas</h3>
-          <p>Usa frases para iniciar conversacion en citas, fiestas, reuniones, chats y momentos incomodos.</p>
+          <h3>Decirlo</h3>
+          <p>Usa frases listas para iniciar conversacion en una cita, reunion, fiesta o chat.</p>
         </article>
         <article>
-          <h3>Modo guiado</h3>
-          <p>Recibe una indicacion natural cuando no quieres repetir una frase palabra por palabra.</p>
+          <h3>Guiame</h3>
+          <p>Recibe una indicacion natural cuando prefieres no usar una frase palabra por palabra.</p>
+        </article>
+        <article>
+          <h3>Listas</h3>
+          <p>Manten varias ideas preparadas para no quedarte pensando que decir.</p>
         </article>
         <article>
           <h3>Cambiar tema</h3>
-          <p>Abre un tema nuevo cuando la conversacion se vuelve repetitiva o pierde energia.</p>
-        </article>
-        <article>
-          <h3>Profundizar</h3>
-          <p>Continua una respuesta con preguntas para conocer mejor a la otra persona.</p>
+          <p>Abre una nueva puerta cuando la conversacion se vuelve repetitiva o pierde energia.</p>
         </article>
       </div>
 
-      <h2>Para que situaciones sirve</h2>
-      <ul class="seo-list">
-        <li>Preguntas para romper el hielo en una primera cita.</li>
-        <li>Iniciadores de conversacion para fiestas o reuniones sociales.</li>
-        <li>Temas de conversacion para networking y trabajo.</li>
-        <li>Frases para iniciar conversacion en chats y matches online.</li>
-        <li>Preguntas interesantes para conocer a alguien.</li>
-        <li>Ideas para salir de un silencio incomodo.</li>
-      </ul>
+      <h2>Que hace nuestra app</h2>
+      <p>
+        CueStarter no es una lista estatica. Esta pensada para el flujo real de una
+        conversacion: empezar, seguir, profundizar, suavizar, cambiar de tema y tener
+        mas frases listas sin perder naturalidad.
+      </p>
 
       <h2>Que no hace</h2>
       <p>
-        CueStarter no reemplaza escuchar, no intenta escribir toda tu conversacion y no
-        pretende convertir una charla en algo artificial. Su objetivo es darte un empujon
-        claro para que puedas hablar con mas naturalidad.
+        No reemplaza escuchar a la otra persona, no escribe toda la conversacion por ti
+        y no intenta sonar artificial. Te da una ayuda practica para iniciar o continuar
+        una charla con mas confianza.
       </p>
 
-      <h2>En que se diferencia de otras apps similares</h2>
-      <p>
-        Muchas paginas muestran listas largas de preguntas. CueStarter esta pensado para
-        el flujo real: empiezas rapido, eliges si quieres una frase o una guia, puedes
-        profundizar, suavizar, cambiar de tema y tener nuevas ideas listas sin perder el
-        ritmo de la conversacion.
-      </p>
+      <h2>Ventajas frente a otras apps de conversation starters</h2>
+      <ul class="seo-list">
+        <li>Funciona en movil y esta pensada para usarse con un dedo.</li>
+        <li>Tiene frases para iniciar conversacion y modo guiado.</li>
+        <li>Permite cambiar completamente de tema.</li>
+        <li>Sirve para citas, networking, fiestas, chats y silencios incomodos.</li>
+        <li>Combina preguntas para romper el hielo con opciones para continuar la charla.</li>
+      </ul>
 
       <h2>Preguntas frecuentes</h2>
       <h3>Es solo para citas?</h3>
-      <p>No. Tambien sirve para amistades, trabajo, networking, fiestas, familia y chats online.</p>
+      <p>No. Tambien sirve para amistades, trabajo, networking, familia, fiestas y chats online.</p>
       <h3>Sirve para romper el hielo?</h3>
-      <p>Si. Esta creada para darte preguntas para romper el hielo y temas de conversacion faciles de usar.</p>
-      <h3>Tambien funciona en ingles?</h3>
-      <p>Si. CueStarter tiene version en ingles y espanol.</p>
+      <p>Si. Esta creada para darte preguntas para romper el hielo y temas faciles de usar.</p>
+      <h3>Hay version en ingles?</h3>
+      <p>Si. Puedes usar la version en ingles en <a href="/en">/en</a>.</p>
 
-      <p><a class="seo-link" href="/">Usar CueStarter ahora</a> <a class="seo-link" href="/about.html">English guide</a></p>
-    </main>
+      <p><a class="seo-link" href="/en">English version</a></p>
+    </section>
+
+    <script src="/app.js?v=22" defer></script>
   </body>
 </html>
