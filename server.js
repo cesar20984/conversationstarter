@@ -99,11 +99,16 @@ ${urlEntries}
 `;
 }
 
-function sendXml(res, body) {
+function sendXml(res, body, method = "GET") {
   res.writeHead(200, {
     "content-type": "application/xml; charset=utf-8",
+    "content-disposition": "inline",
     "cache-control": "no-store"
   });
+  if (method === "HEAD") {
+    res.end();
+    return;
+  }
   res.end(body);
 }
 
@@ -292,9 +297,14 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  if (req.method === "GET") {
+  if (req.method === "GET" || req.method === "HEAD") {
     if (req.url === "/sitemap.xml") {
-      sendXml(res, generateSitemap());
+      sendXml(res, generateSitemap(), req.method);
+      return;
+    }
+    if (req.method === "HEAD") {
+      res.writeHead(200, { "cache-control": "no-store" });
+      res.end();
       return;
     }
     serveStatic(req, res);
