@@ -58,9 +58,10 @@ ${urlEntries}
 }
 
 module.exports = function sitemapHandler(req, res) {
-  res.setHeader("Content-Type", "application/xml; charset=utf-8");
+  res.setHeader("Content-Type", "text/xml; charset=utf-8");
   res.setHeader("Content-Disposition", "inline");
-  res.setHeader("Cache-Control", "s-maxage=3600, stale-while-revalidate=86400");
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("Cache-Control", "no-store, max-age=0");
   if (req.method === "HEAD") {
     res.statusCode = 200;
     res.end();

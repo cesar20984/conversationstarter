@@ -101,8 +101,9 @@ ${urlEntries}
 
 function sendXml(res, body, method = "GET") {
   res.writeHead(200, {
-    "content-type": "application/xml; charset=utf-8",
+    "content-type": "text/xml; charset=utf-8",
     "content-disposition": "inline",
+    "x-content-type-options": "nosniff",
     "cache-control": "no-store"
   });
   if (method === "HEAD") {
