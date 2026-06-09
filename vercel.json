@@ -8,6 +8,14 @@
   ],
   "rewrites": [
     {
+      "source": "/how-to-start-a-conversation",
+      "destination": "/how-to-start-a-conversation.html"
+    },
+    {
+      "source": "/es/como-iniciar-conversaciones",
+      "destination": "/como-iniciar-conversaciones.html"
+    },
+    {
       "source": "/politica-de-privacidad",
       "destination": "/politica-de-privacidad.html"
     },

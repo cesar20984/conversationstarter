@@ -16,6 +16,16 @@ function collectHtmlRoutes() {
   const routes = new Map([
     ["/", { priority: "1.0", changefreq: "weekly", alternates: true, file: "index.html" }],
     ["/es", { priority: "1.0", changefreq: "weekly", alternates: true, file: "es.html" }],
+    ["/how-to-start-a-conversation", { priority: "0.9", changefreq: "monthly", file: "how-to-start-a-conversation.html", alternates: [
+      { lang: "en", route: "/how-to-start-a-conversation" },
+      { lang: "es", route: "/es/como-iniciar-conversaciones" },
+      { lang: "x-default", route: "/how-to-start-a-conversation" }
+    ] }],
+    ["/es/como-iniciar-conversaciones", { priority: "0.9", changefreq: "monthly", file: "como-iniciar-conversaciones.html", alternates: [
+      { lang: "en", route: "/how-to-start-a-conversation" },
+      { lang: "es", route: "/es/como-iniciar-conversaciones" },
+      { lang: "x-default", route: "/how-to-start-a-conversation" }
+    ] }],
     ["/about.html", { priority: "0.8", changefreq: "monthly", alternates: false, file: "about.html" }],
     ["/politica-de-privacidad", { priority: "0.7", changefreq: "monthly", alternates: false, file: "politica-de-privacidad.html" }],
     ["/aviso-legal", { priority: "0.7", changefreq: "monthly", alternates: false, file: "aviso-legal.html" }],
@@ -27,6 +37,8 @@ function collectHtmlRoutes() {
     const reserved = new Set([
       "index.html",
       "es.html",
+      "how-to-start-a-conversation.html",
+      "como-iniciar-conversaciones.html",
       "politica-de-privacidad.html",
       "aviso-legal.html",
       "politica-de-cookies.html",
@@ -56,7 +68,9 @@ function generateSitemap(siteUrl) {
     const filePath = path.join(PUBLIC_DIR, meta.file);
     const stat = fs.existsSync(filePath) ? fs.statSync(filePath) : null;
     const lastmod = stat ? `\n    <lastmod>${stat.mtime.toISOString()}</lastmod>` : "";
-    const alternates = meta.alternates ? `
+    const alternates = Array.isArray(meta.alternates)
+      ? meta.alternates.map(item => `\n    <xhtml:link rel="alternate" hreflang="${item.lang}" href="${siteUrl}${item.route}" />`).join("")
+      : meta.alternates ? `
     <xhtml:link rel="alternate" hreflang="en" href="${siteUrl}/" />
     <xhtml:link rel="alternate" hreflang="es" href="${siteUrl}/es" />
     <xhtml:link rel="alternate" hreflang="x-default" href="${siteUrl}/" />` : "";
