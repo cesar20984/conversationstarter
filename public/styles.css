@@ -522,6 +522,30 @@ h1 {
   padding-left: 22px;
 }
 
+.site-credit {
+  width: min(100%, 860px);
+  margin: 18px auto 24px;
+  padding: 10px 12px;
+  border: 4px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: var(--shadow);
+  font-size: 13px;
+  font-weight: 950;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.site-credit a {
+  color: var(--blue);
+  font-weight: 950;
+  text-decoration: none;
+}
+
+.site-credit a:hover {
+  color: var(--acid);
+}
+
 @keyframes load-sweep {
   to {
     transform: translateX(120%);
